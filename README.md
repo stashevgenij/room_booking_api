@@ -1,24 +1,61 @@
-# README
+# Room Booking API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Stack
 
-Things you may want to cover:
+* Ruby 2.7.1
 
-* Ruby version
+* Rails 6
 
-* System dependencies
+* Database: PostgreSQL
 
-* Configuration
+* Tests: [RSpec](https://github.com/rspec/rspec-rails)
 
-* Database creation
+## Running
 
-* Database initialization
+Tests:
+``` 
+rspec 
+```
+Seeds:
+```
+rake db:seed
+```
+Server:
+```
+rails s
+```
 
-* How to run the test suite
+## API
 
-* Services (job queues, cache servers, search engines, etc.)
+### GET /rooms
+#### Example:
+ ``` 
+ curl http://localhost:3000/rooms
+ ```
 
-* Deployment instructions
+### POST /rooms/:id/bookings
+#### Example:
+```
+curl --header "Content-Type: application/json" \
+     --header "X-User-ID: 1"\
+     --request POST \
+     --data '{"bookings": [{"start_date":"2020-12-13", "end_date":"2020-12-15"}, {"start_date":"2020-12-20", "end_date":"2020-12-22"}]}'\
+     http://localhost:3000/rooms/1/bookings
+```
 
-* ...
+### GET /rooms/:id/bookings
+#### Examples:
+
+All bookings:
+ ``` 
+ curl http://localhost:3000/rooms/1/bookings
+ ```
+
+From ```2020-12-12``` to ```2020-12-14```:
+ ``` 
+ curl 'http://localhost:3000/rooms/1/bookings?from=2020-12-12&to=2020-12-14'
+ ```
+
+
+
+
