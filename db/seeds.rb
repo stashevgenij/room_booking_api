@@ -8,5 +8,5 @@
 
 Room.first_or_create(number: 101)
 
-users = [{ email: "homeless@example.com" }, { email: "homeless2@example.com" }]
+users = [{ email: 'homeless@example.com' }, { email: 'homeless2@example.com' }]
 users.each { |user| User.first_or_create user }

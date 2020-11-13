@@ -1,6 +1,6 @@
 module Authenticator
   extend ActiveSupport::Concern
-  
+
   def current_user
     @current_user ||=
       User.find(request.headers['X-User-ID'])

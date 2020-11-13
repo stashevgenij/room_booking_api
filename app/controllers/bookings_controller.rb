@@ -3,11 +3,11 @@ class BookingsController < ApplicationController
   before_action :set_room
 
   def index
-    if params[:from] && params[:to]
-      @bookings = @room.bookings.filter_by_date_range(params[:from], params[:to])
-    else
-      @bookings = Booking.all
-    end
+    @bookings = if params[:from] && params[:to]
+                  @room.bookings.filter_by_date_range(params[:from], params[:to])
+                else
+                  Booking.all
+                end
     json_response(@bookings)
   end
 
@@ -23,10 +23,10 @@ class BookingsController < ApplicationController
   end
 
   def booking_params
-    params.permit(:room_id, bookings: [:start_date, :end_date])
+    params.permit(:room_id, bookings: %i[start_date end_date])
   end
 
   def merged_booking_params
-    booking_params[:bookings].map { |b| b.merge({ room: @room, user: current_user })}
+    booking_params[:bookings].map { |b| b.merge({ room: @room, user: current_user }) }
   end
 end

@@ -7,7 +7,7 @@ module Requests
 
   module AuthenticationHelpers
     def user_headers(user)
-      {'X-User-ID' => user.id}
+      { 'X-User-ID' => user.id }
     end
   end
 end

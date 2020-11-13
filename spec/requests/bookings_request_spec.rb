@@ -33,11 +33,10 @@ RSpec.describe 'Bookings API', type: :request do
         expect(response).to have_http_status(200)
       end
     end
-
   end
 
   describe 'POST /rooms/:room_id/bookings' do
-    let(:valid_attributes)       { attributes_for :booking, room: room }
+    let(:valid_attributes) { attributes_for :booking, room: room }
 
     context 'when not authorized' do
       before { post "/rooms/#{room.id}/bookings", params: { bookings: [valid_attributes] }, as: :json }
@@ -68,12 +67,11 @@ RSpec.describe 'Bookings API', type: :request do
       end
 
       context 'when the request is valid' do
-        before do 
+        before do
           post "/rooms/#{room.id}/bookings", params: { bookings: [valid_attributes] }, headers: headers, as: :json
         end
 
         it 'creates a booking' do
-          puts response.body
           expect(json[0]['start_date']).to eq(valid_attributes[:start_date].to_date.to_s)
         end
 
@@ -81,7 +79,6 @@ RSpec.describe 'Bookings API', type: :request do
           expect(response).to have_http_status(201)
         end
       end
-
     end
   end
 end
