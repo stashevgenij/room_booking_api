@@ -5,7 +5,7 @@ class Booking < ApplicationRecord
   validates_presence_of :start_date, :end_date
   validate :start_date_earlier_that_end_date, :start_date_is_today_or_later, :room_is_free_for_dates
 
-  scope :filter_by_date_range, -> (from, to) { where("start_date < ? AND end_date > ?", to, from) }
+  scope :filter_by_date_range, -> (from, to) { where("start_date <= ? AND end_date > ?", to, from) }
 
   def self.create_multiple(params)
     if params.kind_of?(Array)
@@ -14,14 +14,14 @@ class Booking < ApplicationRecord
       # отменяем все брони если хотя бы одна не прошла валидацию, 
       # т.к. вероятнее всего клиент не захочет бронировать частично)
       self.transaction do
-        params.each do |booking_params|
+        params.map do |booking_params|
           booking = self.new(booking_params)
-          raise ActiveRecord::Rollback unless booking.save(booking_params)
+          raise ActiveRecord::Rollback unless booking.save!(booking_params)
         end
       end
 
     else
-      self.create(params)
+      self.create!(params)
     end
   end
 

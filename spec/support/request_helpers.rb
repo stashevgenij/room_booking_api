@@ -6,8 +6,8 @@ module Requests
   end
 
   module AuthenticationHelpers
-    def sign_in(user)
-      request.headers['X-User-ID'] = user.id
+    def user_headers(user)
+      {'X-User-ID' => user.id}
     end
   end
 end
