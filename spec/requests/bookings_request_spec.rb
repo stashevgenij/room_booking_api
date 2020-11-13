@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe 'Rooms API', type: :request do
+RSpec.describe 'Bookings API', type: :request do
   let(:room) { create :room }
   let(:user) { create :user }
 
-  describe 'GET /bookings' do
+  describe 'GET /room/:room_id/bookings' do
     let(:booking) { create_list(:booking, 10, room: room, user: user) }
 
     context 'all bookings' do
-      before { get '/bookings' }
+      before { get "/bookings/#{room.id}/bookings" }
 
       it 'returns all rooms' do
         expect(json).not_to be_empty
@@ -21,7 +21,7 @@ RSpec.describe 'Rooms API', type: :request do
     end
 
     context 'bookings in daterange' do
-      before { get '/bookings' params: { from: Time.now.to_date, to: 2.days.ago } }
+      before { get "/room/#{room.id}/bookings" params: { from: Time.now.to_date, to: 2.days.ago } }
 
       it 'returns bookings in daterange' do
         expect(json).not_to be_empty
@@ -35,12 +35,11 @@ RSpec.describe 'Rooms API', type: :request do
 
   end
 
-  describe 'POST /bookings' do
-    # valid payload
+  describe 'POST /room/:room_id/bookings' do
     let(:valid_attributes) { attributes_for :booking, room: room }
 
     context 'when not authorized' do
-      before { post '/bookings', params: valid_attributes }
+      before { post "/room/#{room.id}/bookings", params: valid_attributes }
 
       it 'does not create booking' do
         expect(Booking.count).to eq(0)
@@ -55,7 +54,7 @@ RSpec.describe 'Rooms API', type: :request do
       before { sign_in user }
 
       context 'when the request is invalid' do
-        before { post '/bookings', params: {} }
+        before { post "/room/#{room.id}/bookings", params: {} }
 
         it 'returns status code 422' do
           expect(response).to have_http_status(422)
