@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Booking, type: :model do
+  let(:user) { create :user }
+  let(:room) { create :room }
 
   describe '(validations' do
     it { should belong_to(:room) }
@@ -10,8 +12,6 @@ RSpec.describe Booking, type: :model do
   end
 
   describe '(custom validations)' do
-    let(:user) { create :user }
-    let(:room) { create :room }
 
     it 'ensures the end date later than the start date' do
       booking = room.bookings.new(start_date: Time.now, end_date: 1.day.ago, user: user)
@@ -56,6 +56,21 @@ RSpec.describe Booking, type: :model do
                                             user: user }])
         end.to change(Booking, :count).by(2)
       end
+    end
+  end
+
+  describe '(scopes)' do
+    it 'returns all bookings in daterange' do
+      bookings = room.bookings.create([{ start_date: Time.now,       
+                                         end_date: 3.days.from_now, 
+                                         user: user },
+                                       { start_date: 3.days.from_now, 
+                                         end_date: 5.days.from_now, 
+                                         user: user },
+                                       { start_date: 5.days.from_now, 
+                                         end_date: 7.days.from_now, 
+                                         user: user }])
+      expect(Booking.filter_by_daterange(2.days.from_now, 4.days.from_now).size).to eq(2)
     end
   end
 end
