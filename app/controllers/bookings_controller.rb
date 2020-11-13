@@ -12,8 +12,8 @@ class BookingsController < ApplicationController
   end
 
   def create
-    @booking = Booking.create_multiple(booking_params.merge({ room: @room, user: current_user }))
-    json_response(@booking, :created)
+    @bookings = Booking.create_multiple(merged_booking_params)
+    json_response(@bookings, :created)
   end
 
   private
@@ -23,6 +23,10 @@ class BookingsController < ApplicationController
   end
 
   def booking_params
-    params.permit(:start_date, :end_date)
+    params.permit(:room_id, bookings: [:start_date, :end_date])
+  end
+
+  def merged_booking_params
+    booking_params[:bookings].map { |b| b.merge({ room: @room, user: current_user })}
   end
 end

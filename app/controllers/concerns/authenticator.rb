@@ -1,7 +1,6 @@
 module Authenticator
   extend ActiveSupport::Concern
-
-  # Devise methods overwrites
+  
   def current_user
     @current_user ||=
       User.find(request.headers['X-User-ID'])

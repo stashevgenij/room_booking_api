@@ -16,7 +16,7 @@ class Booking < ApplicationRecord
       self.transaction do
         params.map do |booking_params|
           booking = self.new(booking_params)
-          raise ActiveRecord::Rollback unless booking.save!(booking_params)
+          booking.save! ? booking : raise(ActiveRecord::Rollback)
         end
       end
 

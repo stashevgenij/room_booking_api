@@ -37,10 +37,10 @@ RSpec.describe 'Bookings API', type: :request do
   end
 
   describe 'POST /rooms/:room_id/bookings' do
-    let(:valid_attributes) { attributes_for :booking, room: room }
+    let(:valid_attributes)       { attributes_for :booking, room: room }
 
     context 'when not authorized' do
-      before { post "/rooms/#{room.id}/bookings", params: valid_attributes, as: :json }
+      before { post "/rooms/#{room.id}/bookings", params: { bookings: [valid_attributes] }, as: :json }
 
       it 'does not create booking' do
         expect(Booking.count).to eq(0)
@@ -55,7 +55,7 @@ RSpec.describe 'Bookings API', type: :request do
       let(:headers) { user_headers(user) }
 
       context 'when the request is invalid' do
-        before { post "/rooms/#{room.id}/bookings", params: {}, headers: headers, as: :json }
+        before { post "/rooms/#{room.id}/bookings", params: { bookings: [{}] }, headers: headers, as: :json }
 
         it 'returns status code 422' do
           expect(response).to have_http_status(422)
@@ -69,11 +69,12 @@ RSpec.describe 'Bookings API', type: :request do
 
       context 'when the request is valid' do
         before do 
-          post "/rooms/#{room.id}/bookings", params: valid_attributes, headers: headers, as: :json
+          post "/rooms/#{room.id}/bookings", params: { bookings: [valid_attributes] }, headers: headers, as: :json
         end
 
         it 'creates a booking' do
-          expect(json['start_date']).to eq(valid_attributes[:start_date].to_date.to_s)
+          puts response.body
+          expect(json[0]['start_date']).to eq(valid_attributes[:start_date].to_date.to_s)
         end
 
         it 'returns status code 201' do

@@ -37,12 +37,16 @@ RSpec.describe Booking, type: :model do
     context 'multiple create' do
       it 'creates no bookings if one or more is invalid' do
         expect do 
-          bookings = room.bookings.create_multiple([{ start_date: Time.now,       
-                                                      end_date: 3.days.from_now, 
-                                                      user: user },
-                                                    { start_date: 1.day.from_now, 
-                                                      end_date: 4.days.from_now, 
-                                                      user: user }])
+          begin
+            bookings = room.bookings.create_multiple([{ start_date: Time.now,       
+                                                        end_date: 3.days.from_now, 
+                                                        user: user },
+                                                      { start_date: 1.day.from_now, 
+                                                        end_date: 4.days.from_now, 
+                                                        user: user }])
+          rescue ActiveRecord::RecordInvalid
+            nil
+          end
         end.not_to change(Booking, :count)
       end
 
